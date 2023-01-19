@@ -2,15 +2,11 @@ import pandas
 import numpy
 import matplotlib.pyplot as plt
 
+
 def filter_csv_data_by_year(pandas_csv_data: pandas.DataFrame, year: int):
-    result_data = pandas.DataFrame()
-    for row in pandas_csv_data.iterrows():
-        row = row[1]
-        type(row)
-        if row.get('Year') == year:
-            result_data.add(row)
-    print(result_data)
-    return result_data
+
+    return pandas_csv_data[pandas_csv_data["Year"] == year]
+
 
 def main():
     gdp_data = pandas.read_csv("data/gdp-per-capita-worldbank.csv")
