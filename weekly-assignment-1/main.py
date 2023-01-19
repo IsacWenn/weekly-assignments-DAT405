@@ -1,7 +1,6 @@
 import pandas
 import numpy
 import matplotlib.pyplot as plt
-import mplcursors
 
 YEAR = 2020
 
