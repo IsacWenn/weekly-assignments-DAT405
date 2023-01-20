@@ -2,6 +2,7 @@ import pandas
 import numpy
 import matplotlib
 import matplotlib.pyplot as plt
+
 matplotlib.use("TkAgg")
 
 YEAR = 2020
@@ -28,7 +29,6 @@ def filter_countries_that_are_one_constant_above_another_constant(mean: float, s
 
 
 def main():
-
     #
     # Reading the data.
     #
@@ -49,14 +49,13 @@ def main():
     #
     # Calculating the mean and standard deviation of the life expectancy data.
     #
-    mean = life_expectancy_data_year.mean(axis=0)
-    std = life_expectancy_data_year.std(axis=0)
+    mean = life_expectancy_data_year.mean(axis=0, skipna=True, numeric_only=True)
+    std = life_expectancy_data_year.std(axis=0, skipna=True, numeric_only=True)
 
     #
     # Filtering the countries that are one standard deviation above the mean.
     #
     print(filter_countries_that_are_one_constant_above_another_constant(mean, std, life_expectancy_data_year, "Entity", "Life expectancy"))
-
 
     #
     # Finishing touches and details for the plot.
