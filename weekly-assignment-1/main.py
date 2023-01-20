@@ -82,13 +82,22 @@ def main():
         ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99)
 
     #
-    mean_gdppc = combined_df['GDPPC'].median
-    mean_gdp = combined_df['GDP'].median
-    mean_life_expectancy = combined_df['Life expectancy'].median
+    #mean_gdppc = combined_df['GDPPC'].median
+    #mean_gdp = combined_df['GDP'].median
+    #mean_life_expectancy = combined_df['Life expectancy'].median
 
-    (combined_df.query(f"`Life expectancy` > {mean_life_expectancy} and `GDPPC` > {mean_gdppc} and `GDP` > @mean_gdp")
-     .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']]
-     .sort_values(by='Life expectancy', ascending=False))
+    mean_gdppc = combined_df.describe().loc['50%', 'GDPPC']
+    mean_gdp = combined_df.describe().loc['50%', 'GDP']
+    mean_life_expectancy = combined_df.describe().loc['50%', 'Life expectancy']
+
+    #(combined_df.query(f"`Life expectancy` > {mean_life_expectancy} and `GDPPC` > {mean_gdppc} and `GDP` > @mean_gdp")
+    # .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']]
+    # .sort_values(by='Life expectancy', ascending=False))
+
+    print(combined_df.query(f"`Life expectancy` > {mean_life_expectancy} and `GDPPC` > {mean_gdppc} and `GDP` > {mean_gdp}")
+     .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']])
+
+    print(combined_df.describe())
 
     #
     # Filtering the countries that are one standard deviation above the mean.
