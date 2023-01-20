@@ -50,19 +50,21 @@ def main():
     #
     # Reading the data.
     #
-    gdp_data = pandas.read_csv("data/gdp-per-capita-worldbank.csv")
+    gdppc_data = pandas.read_csv("data/gdp-per-capita-worldbank.csv")
+    gdp_data = pandas.read_csv("data/gross-domestic-product.csv")
     life_expectancy_data = pandas.read_csv("data/life-expectancy.csv")
 
     #
     # Filtering the data to only include data points from a specific year.
     #
+    gdppc_data_year = filter_csv_data_by_year(gdppc_data, YEAR)
     gdp_data_year = filter_csv_data_by_year(gdp_data, YEAR)
     life_expectancy_data_year = filter_csv_data_by_year(life_expectancy_data, YEAR)
 
     #
     # Constructing a scatter plot with the filtered data.
     #
-    construct_scatter_plot(gdp_data_year, life_expectancy_data_year)
+    construct_scatter_plot(gdppc_data_year, life_expectancy_data_year)
 
     #
     # Calculating the mean and standard deviation of the life expectancy data.
@@ -77,7 +79,7 @@ def main():
               ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99))
     #
 
-    mean_gdp = gdp_data_year.mean(axis=0, skipna=True, numeric_only=True)
+    mean_gdp = gdppc_data_year.mean(axis=0, skipna=True, numeric_only=True)
 
     #
     # Filtering the countries that are one standard deviation above the mean.
