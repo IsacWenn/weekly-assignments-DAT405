@@ -77,9 +77,23 @@ def main():
     mean_life = life_expectancy_data_year.describe().loc['mean', 'Life expectancy']
     print(life_expectancy_data_year[life_expectancy_data_year['Life expectancy'] > mean_life + std_life][
               ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99))
-    #
 
-    mean_gdp = gdppc_data_year.mean(axis=0, skipna=True, numeric_only=True)
+    #
+    # Combining the data into a single DataFrame.
+    #
+    combined_df = gdp_data_year.merge(life_expectancy_data_year, on="Entity", how="inner") \
+        .merge(gdppc_data_year, on="Entity", how="inner")
+
+    #
+    # Calculating statistical values of the combined DataFrame.
+    #
+    mean_gdppc = combined_df.describe().loc['mean', 'GDPPC']
+    low_gdp = combined_df.describe().loc['25%', 'GDP']
+    high_life_expectancy = combined_df.describe().loc['75%', 'Life expectancy']
+
+
+    print(combined_df.query(f"`Life expectancy` > {high_life_expectancy} and `GDP` < {low_gdp}")
+          .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']].sort_values(by='Life expectancy', ascending=False))
 
     #
     # Filtering the countries that are one standard deviation above the mean.
