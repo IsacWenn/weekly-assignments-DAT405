@@ -70,6 +70,13 @@ def main():
     mean = life_expectancy_data_year.mean(axis=0, skipna=True, numeric_only=True)
     std = life_expectancy_data_year.std(axis=0, skipna=True, numeric_only=True)
 
+    # Alternative way to calculate mean and std with pandas methods #
+    std_life = life_expectancy_data_year.describe().loc['std', 'Life expectancy']
+    mean_life = life_expectancy_data_year.describe().loc['mean', 'Life expectancy']
+    print(life_expectancy_data_year[life_expectancy_data_year['Life expectancy'] > mean_life + std_life][
+              ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99))
+    #
+
     mean_gdp = gdp_data_year.mean(axis=0, skipna=True, numeric_only=True)
 
     #
