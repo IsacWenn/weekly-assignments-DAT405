@@ -2,6 +2,7 @@ import pandas
 import numpy
 import matplotlib
 import matplotlib.pyplot as plt
+
 matplotlib.use("TkAgg")
 
 YEAR = 2020
@@ -18,7 +19,8 @@ def construct_scatter_plot(gdp_data: pandas.DataFrame, life_expectancy_data: pan
         plt.scatter(row["GDPPC"], row["Life expectancy"], marker=".")
 
 
-def filter_countries_that_are_one_constant_above_another_constant(mean: float, std: float, life_expectancy_data_year: pandas.DataFrame):
+def filter_countries_that_are_one_constant_above_another_constant(mean: float, std: float,
+                                                                  life_expectancy_data_year: pandas.DataFrame):
     list_of_countries = []
     for row in life_expectancy_data_year.iterrows():
         life_expectancy = row[1]["Life expectancy"]
@@ -28,7 +30,6 @@ def filter_countries_that_are_one_constant_above_another_constant(mean: float, s
 
 
 def main():
-
     #
     # Reading the data.
     #
@@ -49,14 +50,13 @@ def main():
     #
     # Calculating the mean and standard deviation of the life expectancy data.
     #
-    mean = life_expectancy_data_year.mean(axis=0)
-    std = life_expectancy_data_year.std(axis=0)
+    mean = life_expectancy_data_year.mean(axis=0, skipna=True, numeric_only=True)
+    std = life_expectancy_data_year.std(axis=0, skipna=True, numeric_only=True)
 
     #
     # Filtering the countries that are one standard deviation above the mean.
     #
     print(filter_countries_that_are_one_constant_above_another_constant(mean, std, life_expectancy_data_year))
-
 
     #
     # Finishing touches and details for the plot.
