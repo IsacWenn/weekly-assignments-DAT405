@@ -20,12 +20,30 @@ def construct_scatter_plot(gdp_data: pandas.DataFrame, life_expectancy_data: pan
 
 
 def filter_countries_that_are_one_constant_above_another_constant(mean: float, std: float, life_expectancy_data_year: pandas.DataFrame, return_column: str, filter_column: str):
-    list_of_countries = []
+    set_of_countries = set([])
     for row in life_expectancy_data_year.iterrows():
         life_expectancy = row[1][filter_column]
         if life_expectancy > (mean + std):
-            list_of_countries.append(row[1][return_column])
-    return set(list_of_countries)
+            set_of_countries.add(row[1][return_column])
+    return set_of_countries
+
+
+def filter_dataframe_above_mean(mean: float, data_frame: pandas.DataFrame, return_column: str, filter_column: str):
+    set_of_countries: set = set([])
+    for row in data_frame.iterrows():
+        value = row[1][filter_column]
+        if value > mean:
+            set_of_countries.add(row[1][return_column])
+    return set_of_countries
+
+
+def filter_dataframe_below_mean(mean: float, data_frame: pandas.DataFrame, return_column: str, filter_column: str):
+    set_of_countries: set = set([])
+    for row in data_frame.iterrows():
+        value = row[1][filter_column]
+        if value < mean:
+            set_of_countries.add(row[1][return_column])
+    return set_of_countries
 
 
 def main():
