@@ -87,7 +87,6 @@ def main():
     #
     # Calculating statistical values of the combined DataFrame.
     #
-    mean_gdppc = combined_df.describe().loc['mean', 'GDPPC']
     low_gdp = combined_df.describe().loc['25%', 'GDP']
     high_life_expectancy = combined_df.describe().loc['75%', 'Life expectancy']
 
@@ -95,10 +94,21 @@ def main():
     print(combined_df.query(f"`Life expectancy` > {high_life_expectancy} and `GDP` < {low_gdp}")
           .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']].sort_values(by='Life expectancy', ascending=False))
 
+    high_gdp = combined_df.describe().loc['75%', 'GDP']
+    low_life_expectancy = combined_df.describe().loc['25%', 'Life expectancy']
+    print()
+    print(combined_df.query(f"`Life expectancy` < {low_life_expectancy} and `GDP` > {high_gdp}")
+          .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']].sort_values(by='Life expectancy', ascending=False))
+
+    high_gdppc = combined_df.describe().loc['75%', 'GDPPC']
+    low_life_expectancy = combined_df.describe().loc['25%', 'Life expectancy']
+    print()
+    print(combined_df.query(f"`Life expectancy` < {low_life_expectancy} and `GDPPC` > {high_gdppc}")
+          .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']].sort_values(by='Life expectancy', ascending=False))
     #
     # Filtering the countries that are one standard deviation above the mean.
     #
-    print(filter_countries_that_are_one_constant_above_another_constant(mean[0], std[0], life_expectancy_data_year, "Entity", "Life expectancy"))
+    #print(filter_countries_that_are_one_constant_above_another_constant(mean[0], std[0], life_expectancy_data_year, "Entity", "Life expectancy"))
     #
     # Finishing touches and details for the plot.
     #
