@@ -19,20 +19,11 @@ def construct_scatter_plot(gdp_data: pandas.DataFrame, life_expectancy_data: pan
         plt.scatter(row["GDPPC"], row["Life expectancy"], marker=".")
 
 
-def filter_countries_that_are_one_constant_above_another_constant(mean: float, std: float, life_expectancy_data_year: pandas.DataFrame, return_column: str, filer_column: str):
+def filter_countries_that_are_one_constant_above_another_constant(mean: float, std: float, life_expectancy_data_year: pandas.DataFrame, return_column: str, filter_column: str):
     list_of_countries = []
     for row in life_expectancy_data_year.iterrows():
-        life_expectancy = row[1][filer_column]
-        if life_expectancy > (mean[0] + std[0]):
-            list_of_countries.append(row[1][return_column])
-    return set(list_of_countries)
-
-
-def filter_countries_that_are_one_constant_below_another_constant(mean: float, std: float, life_expectancy_data_year: pandas.DataFrame, return_column: str, filer_column: str):
-    list_of_countries = []
-    for row in life_expectancy_data_year.iterrows():
-        life_expectancy = row[1][filer_column]
-        if life_expectancy < (mean[0] - std[0]):
+        life_expectancy = row[1][filter_column]
+        if life_expectancy > (mean + std):
             list_of_countries.append(row[1][return_column])
     return set(list_of_countries)
 
@@ -62,13 +53,11 @@ def main():
     std = life_expectancy_data_year.std(axis=0, skipna=True, numeric_only=True)
 
     mean_gdp = gdp_data_year.mean(axis=0, skipna=True, numeric_only=True)
-    std_gdp = gdp_data_year.std(axis=0, skipna=True, numeric_only=True)
 
     #
     # Filtering the countries that are one standard deviation above the mean.
     #
-    print(filter_countries_that_are_one_constant_above_another_constant(mean, std, life_expectancy_data_year, "Entity", "Life expectancy"))
-    print(filter_countries_that_are_one_constant_below_another_constant(mean_gdp, std_gdp, gdp_data_year, "Entity", "GDPPC"))
+    print(filter_countries_that_are_one_constant_above_another_constant(mean[0], std[0], life_expectancy_data_year, "Entity", "Life expectancy"))
     #
     # Finishing touches and details for the plot.
     #
