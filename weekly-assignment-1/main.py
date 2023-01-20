@@ -66,6 +66,9 @@ def main():
     #
     construct_scatter_plot(gdppc_data_year, life_expectancy_data_year)
 
+    combined_df = gdp_data_year.merge(life_expectancy_data_year, on="Entity", how="inner")\
+        .merge(gdppc_data_year, on="Entity", how="inner")
+
     #
     # Calculating the mean and standard deviation of the life expectancy data.
     #
@@ -75,11 +78,17 @@ def main():
     # Alternative way to calculate mean and std with pandas methods #
     std_life = life_expectancy_data_year.describe().loc['std', 'Life expectancy']
     mean_life = life_expectancy_data_year.describe().loc['mean', 'Life expectancy']
-    print(life_expectancy_data_year[life_expectancy_data_year['Life expectancy'] > mean_life + std_life][
-              ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99))
-    #
+    high_life_df = life_expectancy_data_year[life_expectancy_data_year['Life expectancy'] > mean_life + std_life][
+        ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99)
 
-    mean_gdp = gdppc_data_year.mean(axis=0, skipna=True, numeric_only=True)
+    #
+    mean_gdppc = combined_df['GDPPC'].median
+    mean_gdp = combined_df['GDP'].median
+    mean_life_expectancy = combined_df['Life expectancy'].median
+
+    (combined_df.query(f"`Life expectancy` > {mean_life_expectancy} and `GDPPC` > {mean_gdppc} and `GDP` > @mean_gdp")
+     .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']]
+     .sort_values(by='Life expectancy', ascending=False))
 
     #
     # Filtering the countries that are one standard deviation above the mean.
