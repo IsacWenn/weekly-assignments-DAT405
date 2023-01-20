@@ -82,11 +82,12 @@ def main():
         ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99)
 
     #
-    mean_gdppc = combined_df['GDPPC'].median
-    mean_gdp = combined_df['GDP'].median
-    mean_life_expectancy = combined_df['Life expectancy'].median
+    mean_gdppc = combined_df['GDPPC'].mean
+    mean_gdp = combined_df['GDP'].mean
+    mean_life_expectancy = combined_df['Life expectancy'].mean
 
-    (combined_df.query(f"`Life expectancy` > {mean_life_expectancy} and `GDPPC` > {mean_gdppc} and `GDP` > @mean_gdp")
+    # make a query that fetch rows with Life expectancy above mean and GDP below mean.
+    (combined_df.query(f"Life expectancy > {mean_life_expectancy} and GDP < {mean_gdp}")
      .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']]
      .sort_values(by='Life expectancy', ascending=False))
 
