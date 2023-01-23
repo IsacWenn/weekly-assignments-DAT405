@@ -38,11 +38,10 @@ def main():
     #
     construct_scatter_plot(gdppc_data_year, life_expectancy_data_year)
 
-    # Alternative way to calculate mean and std with pandas methods #
     std_life = life_expectancy_data_year.describe().loc['std', 'Life expectancy']
     mean_life = life_expectancy_data_year.describe().loc['mean', 'Life expectancy']
-    print(life_expectancy_data_year[life_expectancy_data_year['Life expectancy'] > mean_life + std_life][
-              ['Entity', 'Life expectancy']].sort_values(by='Life expectancy', ascending=False).head(99))
+    print(life_expectancy_data_year.query(f"`Life expectancy` > {std_life + mean_life}").loc[:, ['Entity', 'Life expectancy']]
+          .sort_values(by='Life expectancy', ascending=False))
 
     # Combining the data into a single DataFrame.
     combined_df = gdp_data_year.merge(life_expectancy_data_year, on="Entity", how="inner") \
@@ -64,7 +63,7 @@ def main():
     low_life_expectancy = combined_df.describe().loc['25%', 'Life expectancy']
     print(combined_df.query(f"`Life expectancy` < {low_life_expectancy} and `GDPPC` > {high_gdppc}")
           .loc[:, ['Entity', 'Life expectancy', 'GDP', 'GDPPC']].sort_values(by='Life expectancy', ascending=False))
-    
+
     #
     # Finishing touches and details for the plot.
     #
