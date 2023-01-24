@@ -14,8 +14,8 @@ def filter_csv_data_by_year(pandas_csv_data: pandas.DataFrame, year: int):
 
 def construct_scatter_plot(gdp_data: pandas.DataFrame, life_expectancy_data: pandas.DataFrame):
     data = gdp_data.merge(life_expectancy_data)
-    for row in data.iterrows():
-        row = row[1]  # Converts row from a Tuple[Hashable, Series] to a Series
+    for index, row in data.iterrows():
+        # row = row[1]  # Converts row from a Tuple[Hashable, Series] to a Series
         plt.scatter(row["GDPPC"], row["Life expectancy"], marker=".")
 
 def main():
