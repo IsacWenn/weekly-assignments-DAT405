@@ -57,7 +57,7 @@ def main():
     predicted = model_logistic.predict(iris.data)
     # Calculating the confusion matrix
     cm = metrics.confusion_matrix(iris.target, predicted)
-    print('Logistic regression matrix:', cm)
+    print('Logistic regression matrix: \n', cm)
 
     # 2b
     # Creating the k-nearest neighbours model
@@ -66,7 +66,14 @@ def main():
     predicted_knn = model_knn.predict(iris.data)
     # Calculating the confusion matrix
     cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
-    print('KNN matrix', cm_knn)
+    print('KNN matrix uniform: \n', cm_knn)
+
+    model_knn = KNeighborsClassifier(n_neighbors=1, weights='distance', algorithm='auto')
+    model_knn.fit(iris.data, iris.target)
+    predicted_knn = model_knn.predict(iris.data)
+    # Calculating the confusion matrix
+    cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
+    print('KNN matrix distance: \n', cm_knn)
 
     # Making the scatter plot
     plt.scatter(data['Living_area'], data['Selling_price'], marker=".")
