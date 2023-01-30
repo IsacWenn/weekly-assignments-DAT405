@@ -61,19 +61,20 @@ def main():
 
     # 2b
     # Creating the k-nearest neighbours model
-    model_knn = KNeighborsClassifier(n_neighbors=1, weights='uniform', algorithm='auto')
-    model_knn.fit(iris.data, iris.target)
-    predicted_knn = model_knn.predict(iris.data)
-    # Calculating the confusion matrix
-    cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
-    print('KNN matrix uniform: \n', cm_knn)
+    knn_plot(iris, 1, 'uniform')
+    knn_plot(iris, 1, 'distance')
 
-    model_knn = KNeighborsClassifier(n_neighbors=1, weights='distance', algorithm='auto')
-    model_knn.fit(iris.data, iris.target)
-    predicted_knn = model_knn.predict(iris.data)
-    # Calculating the confusion matrix
-    cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
-    print('KNN matrix distance: \n', cm_knn)
+    knn_plot(iris, 3, 'uniform')
+    knn_plot(iris, 3, 'distance')
+
+    knn_plot(iris, 10, 'uniform')
+    knn_plot(iris, 10, 'distance')
+
+    knn_plot(iris, 30, 'uniform')
+    knn_plot(iris, 30, 'distance')
+
+    knn_plot(iris, 150, 'uniform')
+    knn_plot(iris, 150, 'distance')
 
     # Making the scatter plot
     plt.scatter(data['Living_area'], data['Selling_price'], marker=".")
@@ -86,6 +87,14 @@ def main():
     plt.ylabel("Selling price")
     plt.show()
 
+
+def knn_plot(iris, k: int, weight: str):
+    model_knn = KNeighborsClassifier(n_neighbors=k, weights=weight, algorithm='auto')
+    model_knn.fit(iris.data, iris.target)
+    predicted_knn = model_knn.predict(iris.data)
+    # Calculating the confusion matrix
+    cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
+    print(f'KNN, {k}-nearest, type {weight}: \n', cm_knn)
 
 if __name__ == "__main__":
     main()
