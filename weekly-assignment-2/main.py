@@ -1,6 +1,5 @@
 import numpy as np
 import pandas
-import numpy
 import matplotlib
 import matplotlib.pyplot as plt
 from sklearn import linear_model
@@ -8,6 +7,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.datasets import load_iris
 from sklearn import metrics
 from sklearn.neighbors import KNeighborsClassifier
+import seaborn as sb
 matplotlib.use("TkAgg")
 
 
@@ -21,7 +21,7 @@ def main():
 
     # 1a
     # Converting the data to a numpy array and reshaping it in order to use it in the linear regression model
-    array = numpy.vstack([data['Living_area'], data['Selling_price']])
+    array = np.vstack([data['Living_area'], data['Selling_price']])
     x = array[0]
     y = array[1]
     x = x.reshape(-1, 1)
@@ -44,13 +44,15 @@ def main():
     print('Selling price at 200m2:', read_linear_line(k, m, 200))
 
     # Plotting the regression line
-    xfit = np.linspace(0, 250, 1000)  # 1000 evenly spaced points in
+    xfit = np.linspace(50, 225, 1000)  # 1000 evenly spaced points in
     yfit = model_linear.predict(xfit[:, np.newaxis])
+
+    # 1d Residual plot
+    sb.residplot(data=data, x='Living_area', y='Selling_price', color="blue")
 
     # 2a
     # Loading the iris data set
     iris = load_iris()
-
     # Creating the logistic regression model
     model_logistic = linear_model.LogisticRegression(max_iter=1000)
     model_logistic.fit(iris.data, iris.target)
@@ -77,10 +79,10 @@ def main():
     knn_plot(iris, 150, 'distance')
 
     # Making the scatter plot
-    plt.scatter(data['Living_area'], data['Selling_price'], marker=".")
+    #plt.scatter(data['Living_area'], data['Selling_price'], marker=".")
 
     # Plotting the regression line
-    plt.plot(xfit, yfit, color='red')
+    #plt.plot(xfit, yfit, color='red')
 
     # Adding labels
     plt.xlabel("Living area")
@@ -95,6 +97,7 @@ def knn_plot(iris, k: int, weight: str):
     # Calculating the confusion matrix
     cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
     print(f'KNN, {k}-nearest, type {weight}: \n', cm_knn)
+
 
 if __name__ == "__main__":
     main()
