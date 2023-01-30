@@ -5,8 +5,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 from sklearn import linear_model
 from sklearn.linear_model import LinearRegression
-from sklearn.linear_model import Ridge
 from sklearn.datasets import load_iris
+from sklearn import metrics
+from sklearn.neighbors import KNeighborsClassifier
 matplotlib.use("TkAgg")
 
 
@@ -27,24 +28,45 @@ def main():
     y = y.reshape(-1, 1)
 
     # Fitting the linear regression model
-    model = LinearRegression().fit(x, y)
+    model_linear = LinearRegression().fit(x, y)
     # 1b
     # Slope value
-    k = float(model.coef_[0][0])
-    print(k)
+    k = float(model_linear.coef_[0][0])
+    print('Slope of the line is:', k)
     # Intercept value
-    m = float(model.intercept_[0])
-    print(m)
+    m = float(model_linear.intercept_[0])
+    print('Intercept of the line is:', m)
 
     # 1c
     # Predicting the selling price at 100, 150 and 200 square meters
-    print(read_linear_line(k, m, 100))
-    print(read_linear_line(k, m, 150))
-    print(read_linear_line(k, m, 200))
+    print('Selling price at 100m2:', read_linear_line(k, m, 100))
+    print('Selling price at 150m2:', read_linear_line(k, m, 150))
+    print('Selling price at 200m2:', read_linear_line(k, m, 200))
 
-    # Plotting the regresion line
+    # Plotting the regression line
     xfit = np.linspace(0, 250, 1000)  # 1000 evenly spaced points in
-    yfit = model.predict(xfit[:, np.newaxis])
+    yfit = model_linear.predict(xfit[:, np.newaxis])
+
+    # 2a
+    # Loading the iris data set
+    iris = load_iris()
+
+    # Creating the logistic regression model
+    model_logistic = linear_model.LogisticRegression(max_iter=1000)
+    model_logistic.fit(iris.data, iris.target)
+    predicted = model_logistic.predict(iris.data)
+    # Calculating the confusion matrix
+    cm = metrics.confusion_matrix(iris.target, predicted)
+    print('Logistic regression matrix:', cm)
+
+    # 2b
+    # Creating the k-nearest neighbours model
+    model_knn = KNeighborsClassifier(n_neighbors=1, weights='uniform', algorithm='auto')
+    model_knn.fit(iris.data, iris.target)
+    predicted_knn = model_knn.predict(iris.data)
+    # Calculating the confusion matrix
+    cm_knn = metrics.confusion_matrix(iris.target, predicted_knn)
+    print('KNN matrix', cm_knn)
 
     # Making the scatter plot
     plt.scatter(data['Living_area'], data['Selling_price'], marker=".")
