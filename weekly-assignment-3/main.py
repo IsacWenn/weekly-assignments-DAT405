@@ -12,15 +12,34 @@ def main():
     data = pandas.read_csv("data/data_assignment3.csv")
     # show_scatter_and_histo2d_plot(data)
     X = data.loc[:, ['phi', 'psi']]
-    center_array = np.array([])
-    for i in range(2, 10):
-        add_kmeans_centerpoints(X, i, center_array)
-    plt.scatter(center_array[:, 0], center_array[:, 1], marker=".", s=1)
+
+    k_range = range(1, 5)
+    mean_squared_error = []
+
+    i, j = 0, 0
+    figure, axis = plt.subplots(2, 2)
+    for k in k_range:
+        # create and train model
+        kmean_model = KMeans(n_clusters=k, random_state=0, n_init=1).fit(X)
+
+        # predict clusters
+        y_pred = kmean_model.predict(X)
+
+        # store mean squared error / k for elbow plot
+        mean_squared_error.append(kmean_model.inertia_)
+
+        axis[i][j].scatter(x=X['phi'], y=X['psi'], c=y_pred, cmap="viridis", marker=".", s=1)
+        axis[i][j].set_xlabel('phi\n')
+        axis[i][j].set_ylabel('psi')
+        axis[i][j].set_title(f'k = {k}')
+
+        j += 1
+        if j % 2 == 0:
+            i += 1
+            j = 0
+
+    plt.subplots_adjust(wspace=0.3, hspace=0.3)
     plt.show()
-
-def add_kmeans_centerpoints(X, n: int, center_array: np.array):
-    kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
-
 
 
 def show_scatter_and_histo2d_plot(data):
