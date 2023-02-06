@@ -27,7 +27,7 @@ def show_scatter_and_histo2d_plot(data, X):
     axis[0].scatter(data["phi"], data["psi"], marker=".", s=1)
     axis[0].set_xlabel("phi")
     axis[0].set_ylabel("psi")
-    axis[1].hist2d(data["phi"], data["psi"], bins=20, cmap="Blues")
+    axis[1].hist2d(data["phi"], data["psi"], bins=10, cmap="Blues")
     axis[1].set_xlabel("phi")
     axis[1].set_ylabel("psi")
 
