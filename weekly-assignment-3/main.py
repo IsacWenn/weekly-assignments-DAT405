@@ -12,18 +12,16 @@ def main():
     data = pandas.read_csv("data/data_assignment3.csv")
     # show_scatter_and_histo2d_plot(data)
     X = data.loc[:, ['phi', 'psi']]
-    center_array = np.array([])
-    for i in range(2, 10):
-        add_kmeans_centerpoints(X, i, center_array)
-    plt.scatter(center_array[:, 0], center_array[:, 1], marker=".", s=1)
-    plt.show()
+    show_scatter_and_histo2d_plot(data, X)
 
-def add_kmeans_centerpoints(X, n: int, center_array: np.array):
+
+
+def get_kmeans_centerpoints(X, n: int):
     kmeans = KMeans(n_clusters=n, random_state=0).fit(X)
+    return kmeans.cluster_centers_
 
 
-
-def show_scatter_and_histo2d_plot(data):
+def show_scatter_and_histo2d_plot(data, X):
     # Creating the scatter and hist2d plots.
     figure, axis = plt.subplots(1, 2)
     axis[0].scatter(data["phi"], data["psi"], marker=".", s=1)
@@ -40,6 +38,23 @@ def show_scatter_and_histo2d_plot(data):
         if isinstance(PCM, plt.cm.ScalarMappable):
             break
     plt.colorbar(PCM, ax=ax)
+
+    centers = get_kmeans_centerpoints(X, 3)
+
+    print(centers)
+    xs = np.array([])
+    ys = np.array([])
+
+    # plt.plot([3, 4], [6, 7], marker='*', ls='none', ms=20)
+
+    for coord in centers:
+        xs = np.append(xs, coord[0])
+        ys = np.append(ys, coord[1])
+    print(xs)
+    print(ys)
+
+    axis[0].plot(xs, ys, marker='o', color='red', ls='none')
+    axis[1].plot(xs, ys, marker='o', color='red', ls='none')
 
     plt.show()
 
