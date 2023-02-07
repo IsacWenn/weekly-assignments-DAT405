@@ -20,9 +20,15 @@ def main():
 
     # kmeans_scatterplot_and_hist2d(X, data)
 
+    elbow_method(X, 11)
+
+    #dbScan(X)
+
+
+def dbScan(X):
     # Creating the DBSCAN model.
     X = StandardScaler().fit_transform(X)
-    db = DBSCAN(eps=0.12, min_samples=70).fit(X)
+    db = DBSCAN(eps=0.13, min_samples=100).fit(X)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_
@@ -30,11 +36,9 @@ def main():
     n_noise_ = list(labels).count(-1)
     print('Estimated number of clusters: %d' % n_clusters_)
     print('Estimated number of noise points: %d' % n_noise_)
-
     unique_labels = set(labels)
     core_samples_mask = np.zeros_like(labels, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
-
     colors = [plt.cm.Spectral(each) for each in np.linspace(0, 1, len(unique_labels))]
     for k, col in zip(unique_labels, colors):
         if k == -1:
@@ -62,7 +66,6 @@ def main():
             markeredgecolor="k",
             markersize=1,
         )
-
     plt.title(f"Estimated number of clusters: {n_clusters_}")
     plt.show()
 
@@ -88,6 +91,20 @@ def kmeans_scatterplot_and_hist2d(X, data):
     # Adding the cluster centers to the scatter plot.
     axis[0].scatter(centers[:, 0], centers[:, 1], c='red', s=20, alpha=0.9)
     axis[1].scatter(centers[:, 0], centers[:, 1], c='red', s=20, alpha=0.9)
+    plt.show()
+
+
+def elbow_method(X, n: int):
+    distortions = []
+    K = range(1, n)
+    for k in K:
+        kmeanModel = KMeans(n_clusters=k, random_state=0, n_init=1)
+        kmeanModel.fit(X)
+        distortions.append(kmeanModel.inertia_)
+    plt.plot(K, distortions, "bx-")
+    plt.xlabel("k")
+    plt.ylabel("Distortion")
+    plt.title("The Elbow Method showing the optimal k")
     plt.show()
 
 
