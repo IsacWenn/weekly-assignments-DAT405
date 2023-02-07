@@ -9,6 +9,7 @@ from sklearn import metrics
 from sklearn import datasets
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
+from pandas import DataFrame
 
 matplotlib.use("TkAgg")
 
@@ -28,6 +29,10 @@ def main():
     #dbScan(X, 0.1, 90)
 
     dbScan_specific(data, 'PRO', 0.5, 200)
+
+    D = data.loc[:, ['residue name']].drop_duplicates()
+    print(D)
+
 
 
 def dbScan_specific(data, residue_name : str,  eps, min_samples):
