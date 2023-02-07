@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn import datasets
+from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
 matplotlib.use("TkAgg")
@@ -20,7 +21,9 @@ def main():
 
     # kmeans_scatterplot_and_hist2d(X, data)
 
-    elbow_method(X, 11)
+    #elbow_method(X, 11)
+
+    nearest_neighbour_dbScan(X, 2)
 
     #dbScan(X)
 
@@ -105,6 +108,17 @@ def elbow_method(X, n: int):
     plt.xlabel("k")
     plt.ylabel("Distortion")
     plt.title("The Elbow Method showing the optimal k")
+    plt.show()
+
+
+def nearest_neighbour_dbScan(X, n: int):
+    nn_model = NearestNeighbors(n_neighbors=n).fit(X)
+    distances, _ = nn_model.kneighbors(X)
+    distances = np.sort(distances, axis=0)
+    distances = distances[:, 1]
+    plt.plot(distances)
+    plt.ylabel('eps')
+    plt.xlabel('distance to nearest n points')
     plt.show()
 
 
