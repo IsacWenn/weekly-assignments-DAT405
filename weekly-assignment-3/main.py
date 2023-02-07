@@ -23,15 +23,33 @@ def main():
 
     #elbow_method(X, 11)
 
-    nearest_neighbour_dbScan(X, 2)
+    #nearest_neighbour_dbScan(X, 2)
 
-    #dbScan(X)
+    #dbScan(X, 0.1, 90)
+
+    dbScan_specific(data, 'PRO', 0.5, 200)
 
 
-def dbScan(X):
+def dbScan_specific(data, residue_name : str,  eps, min_samples):
+    # Creating the DBSCAN model.
+    df_specific = data[(data['residue name'] == f'{residue_name}')]
+    X = df_specific[['phi', 'psi']]
+    X = StandardScaler().fit_transform(X)
+    db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
+    labels = db.labels_
+    number_of_outliers = list(labels).count(-1)
+    y_predict = db.fit_predict(X)
+
+    # create
+    plt.scatter(X[:, 0], X[:, 1], c=y_predict, cmap="viridis", s=3)
+    plt.title(f'DBSCAN {residue_name} eps={eps} min_samples={min_samples}')
+    plt.show()
+
+
+def dbScan(X, eps, min_samples):
     # Creating the DBSCAN model.
     X = StandardScaler().fit_transform(X)
-    db = DBSCAN(eps=0.13, min_samples=100).fit(X)
+    db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_
