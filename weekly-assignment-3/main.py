@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 from sklearn.cluster import DBSCAN
 from sklearn import metrics
 from sklearn import datasets
+from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 
 matplotlib.use("TkAgg")
@@ -20,27 +21,35 @@ def main():
 
     # kmeans_scatterplot_and_hist2d(X, data)
 
-    singleAminoDBSCAN(data, 'PRO')
-
     #elbow_method(X, 11)
 
-    #dbScanUpg3(X)
+    #nearest_neighbour_dbScan(X, 2)
+
+    #dbScan(X, 0.1, 90)
+
+    dbScan_specific(data, 'PRO', 0.5, 200)
 
 
-def singleAminoDBSCAN(data, amino):
-    newDF = data[data['residue name'] == amino]
-    X = newDF.loc[:, ['phi', 'psi']]
-    dbScan(X, 0.2, 10)
+def dbScan_specific(data, residue_name : str,  eps, min_samples):
+    # Creating the DBSCAN model.
+    df_specific = data[(data['residue name'] == f'{residue_name}')]
+    X = df_specific[['phi', 'psi']]
+    X = StandardScaler().fit_transform(X)
+    db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
+    labels = db.labels_
+    number_of_outliers = list(labels).count(-1)
+    y_predict = db.fit_predict(X)
+
+    # create
+    plt.scatter(X[:, 0], X[:, 1], c=y_predict, cmap="viridis", s=3)
+    plt.title(f'DBSCAN {residue_name} eps={eps} min_samples={min_samples}')
+    plt.show()
 
 
-def dbScanUpg3(X):
-    dbScan(X, 0.13, 100)
-
-
-def dbScan(X, epsilon, min_num):
+def dbScan(X, eps, min_samples):
     # Creating the DBSCAN model.
     X = StandardScaler().fit_transform(X)
-    db = DBSCAN(eps=epsilon, min_samples=min_num).fit(X)
+    db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_
@@ -117,6 +126,17 @@ def elbow_method(X, n: int):
     plt.xlabel("k")
     plt.ylabel("Distortion")
     plt.title("The Elbow Method showing the optimal k")
+    plt.show()
+
+
+def nearest_neighbour_dbScan(X, n: int):
+    nn_model = NearestNeighbors(n_neighbors=n).fit(X)
+    distances, _ = nn_model.kneighbors(X)
+    distances = np.sort(distances, axis=0)
+    distances = distances[:, 1]
+    plt.plot(distances)
+    plt.ylabel('eps')
+    plt.xlabel('distance to nearest n points')
     plt.show()
 
 
