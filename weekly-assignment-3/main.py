@@ -11,6 +11,7 @@ from sklearn import datasets
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import StandardScaler
 from pandas import DataFrame
+from sklearn.metrics import silhouette_score
 
 matplotlib.use("TkAgg")
 
@@ -23,17 +24,32 @@ def main():
 
     # kmeans_scatterplot_and_hist2d(X, data)
 
-    #elbow_method(X, 11)
+    # elbow_method(X, 11)
 
     #nearest_neighbour_dbScan(X, 2)
 
-    dbScan_2(X, 0.1, 90, data)
+    sillhouette_score_kmeans(X)
+
+    # dbScan_2(X, 0.1, 90, data)
 
     #dbScan_specific(data, 'PRO', 0.5, 200)
 
     D = data.loc[:, ['residue name']].drop_duplicates()
     #print(D)
 
+
+def sillhouette_score_kmeans(X):
+    score_list = []
+    k_range = range(2, 11)
+    for k in k_range:
+        kmeans = KMeans(n_clusters=k, random_state=0).fit(X)
+        score = silhouette_score(X, kmeans.labels_, random_state=0)
+        score_list.append(score)
+
+    plt.plot(k_range, score_list, 'bx-')
+    plt.xlabel('k')
+    plt.ylabel('Silhouette score')
+    plt.show()
 
 
 def dbScan_specific(data, residue_name : str,  eps, min_samples):
