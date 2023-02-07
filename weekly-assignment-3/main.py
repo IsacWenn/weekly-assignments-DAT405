@@ -1,4 +1,5 @@
 # Main Python program (Week 3)
+import numpy
 import numpy as np
 import pandas
 import matplotlib.pyplot as plt
@@ -26,12 +27,12 @@ def main():
 
     #nearest_neighbour_dbScan(X, 2)
 
-    #dbScan(X, 0.1, 90)
+    dbScan_2(X, 0.1, 90, data)
 
-    dbScan_specific(data, 'PRO', 0.5, 200)
+    #dbScan_specific(data, 'PRO', 0.5, 200)
 
     D = data.loc[:, ['residue name']].drop_duplicates()
-    print(D)
+    #print(D)
 
 
 
@@ -48,6 +49,66 @@ def dbScan_specific(data, residue_name : str,  eps, min_samples):
     # create
     plt.scatter(X[:, 0], X[:, 1], c=y_predict, cmap="viridis", s=3)
     plt.title(f'DBSCAN {residue_name} eps={eps} min_samples={min_samples}')
+    plt.show()
+
+
+def dbScan_2(X, eps, min_samples, data):
+    # Creating the DBSCAN model.
+    X = StandardScaler().fit_transform(X)
+    db = DBSCAN(eps=eps, min_samples=min_samples).fit(X)
+    core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
+    core_samples_mask[db.core_sample_indices_] = True
+    labels = db.labels_
+    n_clusters_ = len(set(labels)) - (1 if -1 in labels else 0)
+    n_noise_ = list(labels).count(-1)
+    print('Estimated number of clusters: %d' % n_clusters_)
+    print('Estimated number of noise points: %d' % n_noise_)
+    unique_labels = set(labels)
+    core_samples_mask = np.zeros_like(labels, dtype=bool)
+    core_samples_mask[db.core_sample_indices_] = True
+    colors = [plt.cm.Spectral(each) for each in np.linspace(0, 1, len(unique_labels))]
+
+
+    # TODO: BarGraph numbering the amount of outliers given a protein type
+
+
+    residue_data = data.loc[:, ['residue name']]
+    residue_data['outlier'] = list(labels)
+    residue_data = residue_data.query("`outlier` == -1")
+
+    residue_data = residue_data['residue name'].value_counts(sort=True).plot.bar()
+    plt.show()
+
+
+
+    for k, col in zip(unique_labels, colors):
+        if k == -1:
+            # Black used for noise.
+            col = [0, 0, 0, 1]
+
+        class_member_mask = labels == k
+
+        xy = X[class_member_mask & core_samples_mask]
+        plt.plot(
+            xy[:, 0],
+            xy[:, 1],
+            "o",
+            markerfacecolor=tuple(col),
+            markeredgecolor="k",
+            markersize=3,
+        )
+
+        xy = X[class_member_mask & ~core_samples_mask]
+        plt.plot(
+            xy[:, 0],
+            xy[:, 1],
+            "o",
+            markerfacecolor=tuple(col),
+            markeredgecolor="k",
+            markersize=1,
+        )
+
+    plt.title(f"Estimated number of clusters: {n_clusters_}")
     plt.show()
 
 
