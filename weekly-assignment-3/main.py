@@ -20,15 +20,27 @@ def main():
 
     # kmeans_scatterplot_and_hist2d(X, data)
 
-    elbow_method(X, 11)
+    singleAminoDBSCAN(data, 'PRO')
 
-    #dbScan(X)
+    #elbow_method(X, 11)
+
+    #dbScanUpg3(X)
 
 
-def dbScan(X):
+def singleAminoDBSCAN(data, amino):
+    newDF = data[data['residue name'] == amino]
+    X = newDF.loc[:, ['phi', 'psi']]
+    dbScan(X, 0.2, 10)
+
+
+def dbScanUpg3(X):
+    dbScan(X, 0.13, 100)
+
+
+def dbScan(X, epsilon, min_num):
     # Creating the DBSCAN model.
     X = StandardScaler().fit_transform(X)
-    db = DBSCAN(eps=0.13, min_samples=100).fit(X)
+    db = DBSCAN(eps=epsilon, min_samples=min_num).fit(X)
     core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
     core_samples_mask[db.core_sample_indices_] = True
     labels = db.labels_
