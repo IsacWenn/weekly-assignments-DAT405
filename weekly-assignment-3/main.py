@@ -22,17 +22,19 @@ def main():
     # show_scatter_and_histo2d_plot(data)
     X = data.loc[:, ['phi', 'psi']]
 
-    # kmeans_scatterplot_and_hist2d(X, data)
+    #kmeans_scatterplot_and_hist2d(X, data)
 
-    # elbow_method(X, 11)
+    #elbow_method(X, 11)
 
     #nearest_neighbour_dbScan(X, 2)
 
-    sillhouette_score_kmeans(X)
+    #sillhouette_score_kmeans(X)
 
-    # dbScan_2(X, 0.1, 90, data)
+    dbScan_2(X, 0.2, 200, data) # 0.1, 90
 
     #dbScan_specific(data, 'PRO', 0.5, 200)
+
+    # nearest_neighbour_dbScan(X, 3)
 
     D = data.loc[:, ['residue name']].drop_duplicates()
     #print(D)
