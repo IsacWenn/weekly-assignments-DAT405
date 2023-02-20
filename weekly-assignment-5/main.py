@@ -49,10 +49,9 @@ def value_iteration(states, reward, gamma: float, epsilon: float):
                 for action in action_list:
                     max_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma), max_reward)
                 next_states[i][j] = max_reward
+        diff = np.abs(states - next_states).sum()
         states = np.copy(next_states)
-
-
-        print(states)
+    print(states)
 
 
 
