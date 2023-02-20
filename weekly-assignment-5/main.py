@@ -1,10 +1,9 @@
-import numpy
 import numpy as np
 
 
 def main():
-    reward = numpy.asarray([[0, 0, 0], [0, 10, 0], [0, 0, 0]]).astype(float)
-    states = numpy.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 0]]).astype(float)
+    reward = np.asarray([[0, 0, 0], [0, 10, 0], [0, 0, 0]]).astype(float)
+    states = np.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 0]]).astype(float)
     epsilon = 0.01
     gamma = 0.9
     value_iteration(states, reward, gamma, epsilon)
@@ -42,7 +41,8 @@ def value_iteration(states, reward, gamma: float, epsilon: float):
     p_action = 0.8
     p_no_action = 1 - p_action
     # Init next states by copying the current states
-    next_states = numpy.copy(states)
+    next_states = np.copy(states)
+    policy = np.zeros(states.shape, dtype=tuple)
     diff = 1
     # Iterate until the difference between the current states and the next states is less than epsilon
     while diff > epsilon:
@@ -53,10 +53,17 @@ def value_iteration(states, reward, gamma: float, epsilon: float):
                 # Get the list of actions that can be taken from the current state
                 action_list = actions(i, j, states.shape[0], states.shape[1])
                 max_reward = 0
+                best_action = None
                 for action in action_list:
                     # Calculate the reward for the current action
-                    max_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma),
-                                     max_reward)
+                    action_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma),
+                                        max_reward)
+                    # Check if the reward is greater than the maximum reward
+                    if action_reward > max_reward:
+                        max_reward = action_reward
+                        # Update the policy matrix with the best action
+                        best_action = action
+                        policy[i][j] = best_action
                     # Update the next states matrix with the maximum reward
                     next_states[i][j] = max_reward
         # Calculate the difference between the current states and the next states
@@ -65,6 +72,7 @@ def value_iteration(states, reward, gamma: float, epsilon: float):
         states = np.copy(next_states)
 
     print(states)
+    print(policy)
 
 
 if __name__ == "__main__":
