@@ -5,9 +5,7 @@ def main():
     states = numpy.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 0]]).astype(float)
     epsilon = 0.01
     gamma = 0.9
-    print(reward)
-    print(states)
-
+    value_iteration(states, reward, gamma, epsilon)
 
 # V_k[s] = max_a Σ_s' p(s′|s,a)*(r(a,s,s′) + γ*V_k−1[s′])
 
@@ -34,14 +32,22 @@ def reward_calc(reward, state, cur_coord: tuple, next_coord: tuple, p_action, p_
     return action_reward
 
 
-def value_iteration(states, next_state, reward, gamma: float, epsilon: float):
+def value_iteration(states, reward, gamma: float, epsilon: float):
     p_action = 0.8
     p_no_action = 1-p_action
-    V_k = numpy.copy(states)
+    next_states = numpy.copy(states)
     diff = 1
     while diff > epsilon:
-        for s in states:
-            pass
+        for i in range(states.shape[0]):
+            for j in range(states.shape[1]):
+                action_list = actions(i, j, states.shape[0], states.shape[1])
+                max_reward = 0
+                for action in action_list:
+                    max_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma), max_reward)
+
+
+
+
 
 
 
