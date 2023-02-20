@@ -9,6 +9,7 @@ def main():
     gamma = 0.9
     value_iteration(states, reward, gamma, epsilon)
 
+
 # V_k[s] = max_a Σ_s' p(s′|s,a)*(r(a,s,s′) + γ*V_k−1[s′])
 
 def actions(x_coord: int, y_coord: int, x_dim: int, y_dim: int):
@@ -31,36 +32,39 @@ def actions(x_coord: int, y_coord: int, x_dim: int, y_dim: int):
 def reward_calc(reward, state, cur_coord: tuple, next_coord: tuple, p_action, p_no_action, gamma: float):
     cur_x, cur_y = cur_coord
     next_x, next_y = next_coord
-    action_reward = (p_action*(reward[next_x][next_y] + gamma * state[next_x][next_y]) +
+    action_reward = (p_action * (reward[next_x][next_y] + gamma * state[next_x][next_y]) +
                      p_no_action * (reward[cur_x][cur_y] + gamma * state[cur_x][cur_y]))
     return action_reward
 
 
 def value_iteration(states, reward, gamma: float, epsilon: float):
+    # Probability of taking the action and not taking the action
     p_action = 0.8
-    p_no_action = 1-p_action
+    p_no_action = 1 - p_action
+    # Init next states by copying the current states
     next_states = numpy.copy(states)
     diff = 1
+    # Iterate until the difference between the current states and the next states is less than epsilon
     while diff > epsilon:
+        # Iterate through the rows of the state matrix
         for i in range(states.shape[0]):
+            # Iterate through the columns
             for j in range(states.shape[1]):
+                # Get the list of actions that can be taken from the current state
                 action_list = actions(i, j, states.shape[0], states.shape[1])
                 max_reward = 0
                 for action in action_list:
-                    max_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma), max_reward)
-                next_states[i][j] = max_reward
+                    # Calculate the reward for the current action
+                    max_reward = max(reward_calc(reward, states, (i, j), action, p_action, p_no_action, gamma),
+                                     max_reward)
+                    # Update the next states matrix with the maximum reward
+                    next_states[i][j] = max_reward
+        # Calculate the difference between the current states and the next states
         diff = np.abs(states - next_states).sum()
+        # Update the current state matrix with the next state matrix
         states = np.copy(next_states)
+
     print(states)
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == "__main__":
